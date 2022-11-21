@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const express = require('express');
 require("console.table");
@@ -32,4 +32,51 @@ db.connect(function (err) {
 ┗━━━┛┗┻┻┛┃┏━┛┗━┛┗━━┛┗━┓┏┛┗━━┛┗━━┛━━━━┗━━━┛┗━━━┛━┗━┛┗━━━┛┗━━┛┗━━━┛┗━━┛┗━━┛
 ━━━━━━━━━┃┃━━━━━━━━━┏━┛┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ━━━━━━━━━┗┛━━━━━━━━━┗━━┛━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+    initialPrompt();
 })
+
+function initialPrompt() {
+    inquirer
+        .prompt({
+            type: "list",
+            name: "task",
+            message: "What would you like to do?",
+            choices: [
+                "View All Departments",
+                "View All Roles",
+                "View All Employees",
+                "Add a Department",
+                "Add a Role",
+                "Add an Employee",
+                "Update an Employee Role",
+                "Exit"]
+        })
+
+}
+
+then(function ({ task }) {
+    switch (task) {
+        case "View All Departments":
+            viewAllDepts();
+            break;
+        case "View All Roles":
+            viewAllRoles();
+            break;
+        case "View All Employees":
+            viewAllEmployees();
+            break;
+        case "Add a Department":
+            addADept();
+            break;
+        case "Add a Role":
+            addARole();
+            break;
+        case "Add an Employee":
+            addAnEmployee();
+            break;
+        case "Update an Employee Role":
+            updateRole();
+            break;
+    }
+});
+
