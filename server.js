@@ -15,9 +15,10 @@ app.use(express.json());
 // Connect to database
 const db = mysql.createConnection(
     {
-        host: 'localhost',
-        user: 'root',
-        password: '',
+        host: "localhost",
+        port: 3001,
+        user: "root",
+        password: "root",
         database: 'employeeDB'
     },
     console.log(`Connected to the employee database.`)
@@ -108,4 +109,22 @@ function viewAllEmployees() {
         start();
     
     });
+}
+
+function addADept(){
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "department",
+            message: "What is the name of the department you would like to add?",
+            validate: (value) => {
+                if (value){
+                    return true;
+                } else {
+                    console.log("You must enter a department name in order to add.");
+                }
+            }
+
+        }
+    ])
 }
