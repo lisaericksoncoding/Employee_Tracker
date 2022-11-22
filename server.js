@@ -1,6 +1,8 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const express = require('express');
+const { createConnection } = require("net");
+const { start } = require("repl");
 require("console.table");
 
 const PORT = process.env.PORT || 3001;
@@ -80,3 +82,30 @@ then(function ({ task }) {
     }
 });
 
+function viewAllDepts() {
+    createConnection.query("SELECT * FROM department", (err, data) => {
+        if (err) throw err;
+        console.log("All departments are listed.");
+        console.table(data);
+        start();
+    
+    });
+}
+function viewAllRoles() {
+    createConnection.query("SELECT * FROM role", (err, data) => {
+        if (err) throw err;
+        console.log("All roles are listed.");
+        console.table(data);
+        start();
+    
+    });
+}
+function viewAllEmployees() {
+    createConnection.query("SELECT * FROM employee", (err, data) => {
+        if (err) throw err;
+        console.log("All employees are listed.");
+        console.table(data);
+        start();
+    
+    });
+}
