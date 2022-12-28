@@ -7,7 +7,7 @@ VALUES
 ("Merchandising"),
 ("Sourcing");
 
-INSERT INTO role(title, salaray, dept_id)
+INSERT INTO role(title, salary, dept_id)
 VALUES
 ("Digital Operations Analyst", 65000, 1),
 ("Digital Content Editor", 70000, 1),

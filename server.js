@@ -1,9 +1,9 @@
-const mysql = require("mysql2");
-const inquirer = require("inquirer");
+const mysql = require('mysql2');
+const inquirer = require('inquirer');
 const express = require('express');
-const { createConnection } = require("net");
-const { start } = require("repl");
-require("console.table");
+const { createConnection } = require('net');
+const { start } = require('repl');
+const consoleTable = require('console.table');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,9 +16,9 @@ app.use(express.json());
 const db = mysql.createConnection(
     {
         host: "localhost",
-        port: 3001,
+        port: 3306,
         user: "root",
-        password: "root",
+        password: "ER642fun!",
         database: 'employeeDB'
     },
     console.log(`Connected to the employee database.`)
@@ -38,6 +38,8 @@ db.connect(function (err) {
     initialPrompt();
 })
 
+//functions
+
 function initialPrompt() {
     inquirer
         .prompt({
@@ -55,9 +57,7 @@ function initialPrompt() {
                 "Exit"]
         })
 
-}
-
-then(function ({ task }) {
+.then(function ({ task }) {
     switch (task) {
         case "View All Departments":
             viewAllDepts();
@@ -82,43 +82,44 @@ then(function ({ task }) {
             break;
     }
 });
+}
 
 function viewAllDepts() {
-    createConnection.query("SELECT * FROM department", (err, data) => {
+    db.query("SELECT * FROM department", (err, data) => {
         if (err) throw err;
         console.log("All departments are listed.");
         console.table(data);
-        start();
-    
+        initialPrompt();
+
     });
 }
 function viewAllRoles() {
-    createConnection.query("SELECT * FROM role", (err, data) => {
+    db.query("SELECT * FROM role", (err, data) => {
         if (err) throw err;
         console.log("All roles are listed.");
         console.table(data);
-        start();
-    
+        initialPrompt();
+
     });
 }
 function viewAllEmployees() {
-    createConnection.query("SELECT * FROM employee", (err, data) => {
+    db.query("SELECT * FROM employee", (err, data) => {
         if (err) throw err;
         console.log("All employees are listed.");
         console.table(data);
-        start();
-    
+        initialPrompt();
+
     });
 }
 
-function addADept(){
+function addADept() {
     inquirer.prompt([
         {
             type: "input",
-            name: "department",
+            name: "name",
             message: "What is the name of the department you would like to add?",
-            validate: (value) => {
-                if (value){
+            validate: (answer) => {
+                if (answer) {
                     return true;
                 } else {
                     console.log("You must enter a department name in order to add.");
@@ -126,5 +127,57 @@ function addADept(){
             }
 
         }
-    ])
+    ]).then(function (answer) {
+        db.query("INSERT INTO department SET ?", [answer.department]), function (err, data) {
+            if (err) throw err;
+            console.table(data);
+            initialPrompt();
+        }
+    })
+}
+
+function addARole() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "What is the title of the role that you would like to add?",
+            validate: (answer) => {
+                if (answer) {
+                    return true;
+                } else {
+                    console.log("You must enter a title in order to add.");
+                }
+            }
+
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "What is the salary of the role that you would like to add?",
+            validate: (answer) => {
+                if (answer) {
+                    return true;
+                } else {
+                    console.log("You must enter a salary in order to add.");
+                }
+            }
+
+        },
+        {
+            type: "input",
+            name: "dept_id",
+            message: "What department will this role be a part of?",
+            choices: [
+                `SELECT * FROM departments`
+            ]
+        },
+        
+    ]).then(function (answer) {
+        db.query("INSERT INTO role SET ?", [answer.role]), function (err, data) {
+            if (err) throw err;
+            console.table(data);
+            initialPrompt();
+        }
+    })
 }
