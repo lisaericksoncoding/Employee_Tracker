@@ -32,7 +32,7 @@ If you are successful in adding or updating, you will see a success message.
 
 - [Employee Tracker Repo](https://github.com/lisaericksoncoding/Employee_Tracker "Employee Tracker Repo")
 
-- [Demo Video](https://lisaericksoncoding.github.io/Note_Taker "Demo Video")
+- [Demo Video](https://drive.google.com/file/d/1cY9CsJL4aJPlEkgpT8-kLsR5W0S6yhW3/view?usp=sharing "Demo Video")
 
 ## Built With
 - Visual Studio Code
