@@ -1,9 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const express = require('express');
-// const { createConnection } = require('net');
-// const { start } = require('repl');
-// const consoleTable = require('console.table');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -53,7 +50,7 @@ function initialPrompt() {
                 "Add a Department",
                 "Add a Role",
                 "Add an Employee",
-                "Update an Employee Role",
+                "Update an Employee",
                 "Exit"]
         })
 
@@ -77,9 +74,12 @@ function initialPrompt() {
                 case "Add an Employee":
                     addAnEmployee();
                     break;
+                case "Update an Employee":
+                    updateAnEmployee();
+                    break;
                 case "Exit":
                     process.exit(0);
-                
+
             }
         });
 }
@@ -140,12 +140,12 @@ function addARole() {
     db.query(`SELECT * FROM department`, (err, data) => {
         if (err) throw err;
 
-var deptChoices = data.map(dept => {
-    return {
-        name: dept.name,
-        value: dept.id
-    }
-})
+        var deptChoices = data.map(dept => {
+            return {
+                name: dept.name,
+                value: dept.id
+            }
+        })
         inquirer.prompt([
             {
                 type: "input",
@@ -186,22 +186,23 @@ var deptChoices = data.map(dept => {
                 console.log("The role has been successfully added.");
                 initialPrompt();
             })
-        }) .catch(err => {
-            console.log(err)}
+        }).catch(err => {
+            console.log(err)
+        }
         )
-        
+
     });
 }
 function addAnEmployee() {
     db.query(`SELECT * FROM role`, (err, data) => {
         if (err) throw err;
 
-var roleChoices = data.map(role => {
-    return {
-        name: role.title,
-        value: role.id
-    }
-})
+        var roleChoices = data.map(role => {
+            return {
+                name: role.title,
+                value: role.id
+            }
+        })
         inquirer.prompt([
             {
                 type: "input",
@@ -242,10 +243,58 @@ var roleChoices = data.map(role => {
                 console.log("The employee has been successfully added.");
                 initialPrompt();
             })
-        }) .catch(err => {
-            console.log(err)}
+        }).catch(err => {
+            console.log(err)
+        }
         )
-        
+
+    });
+}
+
+function updateAnEmployee() {
+    db.query(`SELECT * FROM employee`, (err, data) => {
+        if (err) throw err;
+
+        var employeeChoices = data.map(employee => {
+            return {
+                name: employee.first_name + " " + employee.last_name,
+                value: employee.id
+            }
+        })
+        console.log(employeeChoices);
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Which employee's file are you looking to update?",
+                choices: employeeChoices
+            },
+            {
+                type: "input",
+                name: "last_name",
+                message: "What is the employee's new last name?",
+                validate: (answer) => {
+                    if (answer) {
+                        return true;
+                    } else {
+                        console.log("You must enter a last name in order to update.");
+                    }
+                }
+
+            },
+
+
+        ]).then(function (answer) {
+                      db.query(`UPDATE employee SET last_name = ? WHERE id = ?`, [answer.last_name ,  answer.employee], function (err, data) {
+                if (err) throw err;
+                console.log("The employee's last name has been successfully updated.");
+                initialPrompt();
+            })
+        }).catch(err => {
+            console.log(err)
+        }
+        )
+
     });
 }
 
